@@ -13,7 +13,7 @@ templates = Jinja2Templates(directory="templates")
 # Fungsi untuk memuat data Collaborative Filtering (CF)
 def load_data_CF():
     try:
-        conn = mysql.connector.connect(user='root', host='localhost', database='db_course')
+        conn = mysql.connector.connect(user='u1575554_course', host='courseacademy.my.id', database='u1575554_db_course', password='Noveliandry23')
         cursor = conn.cursor()
         cursor.execute("""
         SELECT DISTINCT r.user_id AS user_id, r.course_id AS course_id, r.rating AS rating
@@ -38,7 +38,7 @@ def load_data_CF():
 # Fungsi untuk memuat data Content-Based Filtering (CBF)
 def load_data_CBF():
     try:
-        conn = mysql.connector.connect(user='root', host='localhost', database='db_course')
+        conn = mysql.connector.connect(user='u1575554_course', host='courseacademy.my.id', database='u1575554_db_course', password='Noveliandry23')
         cursor = conn.cursor()
         cursor.execute("""
         SELECT DISTINCT  r.user_id AS user_id,  r.course_id AS course_id,  c.course_title AS course_title,  c.about AS description,  r.rating AS rating,  ct.type AS category_type
