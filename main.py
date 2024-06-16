@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 import mysql.connector
+import uvicorn
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -128,5 +129,4 @@ async def get_recommendations(request: Request):
     return JSONResponse(content=recommendations)
 
 if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.5", port=8001)
+    uvicorn.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
