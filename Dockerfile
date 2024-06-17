@@ -1,9 +1,6 @@
-FROM python:3.10-slim
-ENV PYTHONBUFFERED True
-ENV APP_HOME /app
-WORKDIR $APP_HOME
-COPY . ./
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-EXPOSE 5001
-CMD ["python", "main.py"]
+FROM python:3.12
+WORKDIR /app
+COPY requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY . .
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
