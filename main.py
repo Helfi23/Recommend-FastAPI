@@ -2,7 +2,6 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 import mysql.connector
-import uvicorn
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -109,8 +108,10 @@ def recommend(user_id, cosine_sim_cbf=cosine_sim_cbf, top_n=5):
 
 # Route untuk halaman index
 @app.get('/')
-def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+async def get_root():
+    return {"Message":"WELCOME TO HYBRID RECOMMENDER"}
+# def index(request: Request):
+#     return templates.TemplateResponse("index.html", {"request": request})
 
 # Route untuk mendapatkan rekomendasi berdasarkan form
 @app.post('/recommend')
@@ -129,4 +130,5 @@ async def get_recommendations(request: Request):
     return JSONResponse(content=recommendations)
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.5", port=8001)
