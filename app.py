@@ -3,7 +3,6 @@ from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 import mysql.connector
 import pandas as pd
-import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -18,7 +17,11 @@ def load_data_CF():
         cursor.execute("""
         SELECT DISTINCT r.user_id AS user_id, r.course_id AS course_id, r.rating AS rating
                        FROM histories h 
-                       JOIN reviews r ON h.course_id = r.course_id JOIN materials m ON m.id = h.material_id  JOIN chapters cp ON m.chapter_id = cp.id JOIN courses c ON r.course_id = c.id JOIN categoris ct ON c.categori_id = ct.id;
+                       JOIN reviews r ON h.course_id = r.course_id 
+                       JOIN materials m ON m.id = h.material_id  
+                       JOIN chapters cp ON m.chapter_id = cp.id 
+                       JOIN courses c ON r.course_id = c.id 
+                       JOIN categoris ct ON c.categori_id = ct.id;
         """)
 
         records = cursor.fetchall()
@@ -42,7 +45,12 @@ def load_data_CBF():
         cursor = conn.cursor()
         cursor.execute("""
         SELECT DISTINCT  r.user_id AS user_id,  r.course_id AS course_id,  c.course_title AS course_title,  c.about AS description,  r.rating AS rating,  ct.type AS category_type
-                       FROM histories h JOIN reviews r ON h.course_id = r.course_id JOIN materials m ON h.material_id = m.id JOIN chapters cp ON m.chapter_id = cp.id JOIN courses c ON r.course_id = c.id JOIN categoris ct ON c.categori_id = ct.id;
+                       FROM histories h 
+                       JOIN reviews r ON h.course_id = r.course_id 
+                       JOIN materials m ON h.material_id = m.id 
+                       JOIN chapters cp ON m.chapter_id = cp.id 
+                       JOIN courses c ON r.course_id = c.id 
+                       JOIN categoris ct ON c.categori_id = ct.id;
         """)
 
         records = cursor.fetchall()
@@ -110,8 +118,6 @@ def recommend(user_id, cosine_sim_cbf=cosine_sim_cbf, top_n=5):
 @app.get('/')
 async def get_root():
     return {"Message":"WELCOME TO HYBRID RECOMMENDER"}
-# def index(request: Request):
-#     return templates.TemplateResponse("index.html", {"request": request})
 
 # Route untuk mendapatkan rekomendasi berdasarkan form
 @app.post('/recommend')
@@ -123,7 +129,7 @@ async def get_recommendations(request: Request):
 
 # Route untuk mendapatkan rekomendasi berdasarkan JSON
 @app.post('/recommend_in')
-async def get_recommendations(request: Request):
+async def get_recommendations_json(request: Request):
     form_data = await request.json()  # Menggunakan request.json() untuk mendapatkan data JSON
     user_id = form_data['user_id']
     recommendations = recommend(int(user_id))
@@ -136,4 +142,3 @@ if __name__ == '__main__':
     port = int(os.getenv("PORT", 8080))
     
     uvicorn.run(app, host="0.0.0.0", port=port)
-
